@@ -14,13 +14,14 @@ def build_list() -> []:
             print(f"Your inputs must be numbers!\n{type(ex).__name__}: {ex}")
         except Exception as ex:
             print(f"Something unexpected happened:\n{type(ex).__name__}: {ex}")
-        # exception type from https://stackoverflow.com/questions/9823936/how-do-i-determine-what-type-of-exception-occurred
+        # exception type from:
+        # https://stackoverflow.com/questions/9823936/how-do-i-determine-what-type-of-exception-occurred
 
     return input_list
 
 
-def sort_list(unsorted_list: []):
-    print(sorted(unsorted_list))
+def sort_list(unsort_list: []):
+    print(sorted(unsort_list))
 
 
 if __name__ == "__main__":
