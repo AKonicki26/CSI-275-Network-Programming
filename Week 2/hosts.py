@@ -139,7 +139,7 @@ class Hosts:
     def contains_entry(self, hostname):
         """Return whether or not a given hostname exists."""
         #   *** YOUR CODE HERE ***
-        raise_not_defined()
+        return hostname in self.hostnames
 
     def get_ip(self, hostname):
         """Return the IP for a given hostname.
@@ -148,4 +148,8 @@ class Hosts:
         None is returned.
         """
         #   *** YOUR CODE HERE ***
-        raise_not_defined()
+        if not self.contains_entry(hostname):
+            return None
+
+        return self.ips[self.hostnames.index(hostname)]
+
