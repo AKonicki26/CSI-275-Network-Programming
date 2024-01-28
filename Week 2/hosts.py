@@ -7,9 +7,10 @@ The following code was written by Joshua Auerbach (jauerbach@champlain.edu)
 Host class __init__ function by Jason Reeves 1/4/2021 (reeves@champlain.edu)
 """
 
-from util import raise_not_defined
+# from util import raise_not_defined
 # Added imports by Anne
 import re
+
 
 class InvalidEntryError(Exception):
     """Exception raised for invalid entries in the hosts file."""
@@ -28,9 +29,12 @@ def is_valid_ip_address(ip_address):
 
     """
     #   *** YOUR CODE HERE **
-
-    pattern = "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
-    return True if re.match(pattern, ip_address) else False
+    pattern = "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}"
+    if not re.match(pattern, str(ip_address)):
+        return False
+    valid_sections = [int(section) for section in str.split(str(ip_address), ".") if 0 <= int(section) <= 255]
+    print(valid_sections)
+    return len(valid_sections) == 4
     # raise_not_defined()
 
 
@@ -49,10 +53,11 @@ def is_valid_hostname(hostname):
 
     """
     #   *** YOUR CODE HERE ***
+
+    if len(hostname) == 0:
+        return False
     bad_chars = [char for char in hostname if (not char.isalnum() and char not in ["-", "."])]
-    print(f"Full Hostname: {hostname}. First char: {hostname[0]}. Last char: {hostname[-1]}")
-    print("Return val:" + str(hostname[0].isalnum() and hostname[-1].isalnum() and (len(bad_chars) == 0)))
-    return hostname[0].isalnum() and hostname[-1].isalnum() and (len(bad_chars) == 0)
+    return hostname[0].isalpha() and hostname[-1].isalnum() and (len(bad_chars) == 0)
     # raise_not_defined()
 
 
@@ -152,4 +157,3 @@ class Hosts:
             return None
 
         return self.ips[self.hostnames.index(hostname)]
-
