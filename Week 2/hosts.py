@@ -5,6 +5,22 @@
 Champlain College CSI-235, Spring 2019
 The following code was written by Joshua Auerbach (jauerbach@champlain.edu)
 Host class __init__ function by Jason Reeves 1/4/2021 (reeves@champlain.edu)
+
+Author: Anne Konicki
+Class: CSI-275
+Assignment: Lab 2: Host Names and IP Addresses
+Certification of Authenticity:
+I certify that this is entirely my own work,
+except where I have given fully documented
+references to the work of others.I understand the definition and
+consequences of plagiarism and acknowledge that the assessor of this assignment
+may, for the purpose of assessing this assignment :
+-Reproduce this assignment and provide a copy to another member of
+academic staff; and / or
+- Communicate a copy of this assignment to a plagiarism checking service
+which may then retain a copy of this assignment on its database for
+the purpose of future plagiarism checking)
+
 """
 
 # from util import raise_not_defined
@@ -32,8 +48,9 @@ def is_valid_ip_address(ip_address):
     pattern = "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}"
     if not re.match(pattern, str(ip_address)):
         return False
-    valid_sections = [int(section) for section in str.split(str(ip_address), ".") if 0 <= int(section) <= 255]
-    print(valid_sections)
+    valid_sections = [int(section) for section in
+                      str.split(str(ip_address), ".")
+                      if 0 <= int(section) <= 255]
     return len(valid_sections) == 4
     # raise_not_defined()
 
@@ -56,8 +73,11 @@ def is_valid_hostname(hostname):
 
     if len(hostname) == 0:
         return False
-    bad_chars = [char for char in hostname if (not char.isalnum() and char not in ["-", "."])]
-    return hostname[0].isalpha() and hostname[-1].isalnum() and (len(bad_chars) == 0)
+    bad_chars = [char for char in hostname
+                 if (not char.isalnum() and char not in ["-", "."])]
+    return (hostname[0].isalpha()
+            and hostname[-1].isalnum()
+            and (len(bad_chars) == 0))
     # raise_not_defined()
 
 
