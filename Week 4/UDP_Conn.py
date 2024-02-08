@@ -7,10 +7,10 @@ if __name__ == "__main__":
     udp_conn = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
     data = "Hey there, Scott's Server!"
-    address = ("68.183.63.165", 9998)
+    send_address = ("216.93.148.124", 54810)
 
     # udp connections use sendto()
-    udp_conn.sendto(data.encode('ascii'), address)
+    udp_conn.sendto(data.encode('ascii'), send_address)
 
     print("Sent message")
     MAX_TIMEOUT = 10
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     udp_conn.settimeout(wait_time)
     while True:
         try:
-            udp_conn.sendto(data.encode("ascii"), address)
+            udp_conn.sendto(data.encode("ascii"), send_address)
             response, address = udp_conn.recvfrom(4096)
             print(f"'{response.decode()}' received from {address}")
             time.sleep(0.75)
