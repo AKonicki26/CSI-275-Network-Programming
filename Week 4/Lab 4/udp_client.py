@@ -8,6 +8,10 @@ import socket
 import constants
 from random import randint
 
+class TimeOutError(Exception):
+    def __init__(self, message="An error occurred"):
+        super().__init__(message)
+
 
 class UDPClient:
     def __init__(self, host: str, port: int, include_id: bool = False):
@@ -27,9 +31,10 @@ class UDPClient:
         sections = response.split("|")
         if len(sections) != 2:
             return ""
+
         response_id = sections[0]
         response_character = sections[1]
-        return response_character if message_id == response_id else ""
+        return response_character if str(message_id) == str(response_id) else ""
 
 
     def send_character(self, character: str) -> str:
@@ -64,7 +69,7 @@ class UDPClient:
                 udp_conn.settimeout(wait_time)
         # Loop has exited, max wait time exceeded
         #print("Exceeded maximum wait time")
-        return ""
+        raise TimeOutError()
 
 
     def send_message_by_character(self, message: str) -> str:
