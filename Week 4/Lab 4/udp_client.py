@@ -47,8 +47,8 @@ class UDPClient:
         :argument include_id boolean value, should the connector
         send unique message ID's attached to the sent data.
         """
-        self.host = host
-        self.port = port
+        self.address = (host, port)
+        self.udp_conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.include_id = include_id
 
     def verify_response(self, message_id: str, response) -> str:
@@ -68,8 +68,7 @@ class UDPClient:
         if len(sections) != 2:
             return ""
 
-        response_id = sections[0]
-        response_character = sections[1]
+        response_id, response_character = sections[0], sections[1]
         return response_character if \
             str(message_id) == str(response_id) else ""
 
@@ -78,35 +77,38 @@ class UDPClient:
 
         :argument character the character to be sent.
         """
-        udp_conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         wait_time = constants.INITIAL_TIMEOUT
-        udp_conn.settimeout(wait_time)
+        self.udp_conn.settimeout(wait_time)
         while wait_time <= constants.MAX_TIMEOUT:
             try:
                 # If messages should be sent with a verification
                 if self.include_id:
                     message_id = randint(0, constants.MAX_ID - 1)
-                    udp_conn.sendto(
+                    self.udp_conn.sendto(
                         f"{message_id}|{character}".encode('ascii'),
-                        (self.host, self.port))
-                    response, address = udp_conn.recvfrom(constants.MAX_BYTES)
+                        self.address)
+                    response, address = self.udp_conn.recvfrom(
+                        constants.MAX_BYTES)
                     response = response.decode('ascii')
 
                     verify_response = self.verify_response(message_id,
                                                            response)
-                    if verify_response == "":
+                    if not verify_response:
                         continue
                     return verify_response
                 # If messages do not need a verification
                 else:
-                    udp_conn.sendto(character.encode('ascii'),
-                                    (self.host, self.port))
-                    response, address = udp_conn.recvfrom(constants.MAX_BYTES)
+                    self.udp_conn.sendto(character.encode('ascii'),
+                                         self.address)
+                    response, address = self.udp_conn.recvfrom(
+                        constants.MAX_BYTES)
                     response = response.decode('ascii')
                     return response
             except socket.timeout:
                 wait_time *= 2
-                udp_conn.settimeout(wait_time)
+                self.udp_conn.settimeout(wait_time)
+            except Exception as ex:
+                print("Something unexpected happened: " + ex)
         # Loop has exited, max wait time exceeded
         raise TimeOutError()
 
