@@ -51,7 +51,8 @@ class UDPClient:
         self.udp_conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.include_id = include_id
 
-    def verify_response(self, message_id: str, response) -> str:
+    @staticmethod
+    def verify_response(message_id: str, response) -> str:
         """Verify the response ID received from the server.
 
         Checks the response ID against the message ID sent.
@@ -91,7 +92,7 @@ class UDPClient:
                         constants.MAX_BYTES)
                     response = response.decode('ascii')
 
-                    verify_response = self.verify_response(message_id,
+                    verify_response = self.verify_response(str(message_id),
                                                            response)
                     if not verify_response:
                         continue

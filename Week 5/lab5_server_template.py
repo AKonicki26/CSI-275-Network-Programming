@@ -20,9 +20,9 @@ class SortServer:
         data = data.decode('ascii')
         if "LIST " not in data:
             return "ERROR"
-        data_to_sort = data.split("LIST ")[1].split()
+        data_to_sort = data.split("LIST ")[1]
 
-        def number_sort(num_list: list[str], descending = False) -> str:
+        def number_sort(num_list: list[str], descending=False) -> str:
             """Get the return string from list of numbers."""
             try:
                 num_list = sorted([float(number) for number in num_list], reverse=descending)
@@ -34,13 +34,25 @@ class SortServer:
             except ValueError:
                 return "ERROR"
 
-        def string_sort(string_list: list[str], descending: False) -> str:
+        def string_sort(string_list: list[str], descending=False) -> str:
             if any([number for number in string_list if not number.isdigit()]):
                 return "ERROR"
             return "SORTED " + str.join(" ", sorted(string_list, reverse=descending))
 
+        if "|" in data_to_sort:
+            data_to_sort, tag = data_to_sort.split("|")
+            data_to_sort = data_to_sort.split()
+            if tag not in ['a', 'd', 's']:
+                return "ERROR"
+            if tag == 'a':
+                return number_sort(data_to_sort)
+            elif tag == 'd':
+                return number_sort(data_to_sort, True)
+            elif tag == 's':
+                return string_sort(data_to_sort)
 
-        return string_sort(data_to_sort)
+        data_to_sort = data_to_sort.split()
+        return number_sort(data_to_sort)
 
     def run_server(self):
         """Don't forget your docstring!"""
