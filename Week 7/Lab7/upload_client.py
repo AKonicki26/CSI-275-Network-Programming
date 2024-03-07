@@ -15,6 +15,13 @@ class UploadError(Exception):
 class UploadClient:
     # TODO document this class and implement the specified functions
 
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+
+        self.tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.tcp_sock.connect((host, port))
+
     def upload_file(self, file_path):
         """Upload a file to the class's server.
 
@@ -31,10 +38,8 @@ class UploadClient:
                  + str(len(file_data)) + "\n"
         print(f"Sending {header}")
 
-        # TODO: Change tcp_sock here to match your __init__ function!
         self.tcp_sock.sendall(header.encode("ascii"))
 
-        # TODO: Change tcp_sock here to match your __init__ function!
         # Send the file data
         self.tcp_sock.sendall(file_data)
 
@@ -44,6 +49,56 @@ class UploadClient:
             raise UploadError
         else:
             print("Upload successful")
+
+    def close(self):
+        """Close the tcp socket."""
+        self.tcp_sock.close()
+
+    def recv_all(self, length: int) -> bytearray:
+        data = b''
+        while len(data) < length:
+            more = self.tcp_sock.recv(length - len(data))
+            if not more:
+                raise EOFError('was expecting %d bytes but only received'
+                               ' %d bytes before the socket closed'
+                               % (length, len(data)))
+            data += more
+        return data
+
+
+
+    def recv_until_delimiter(self, delimiter, buffer):
+        total_data = ''
+
+        # TODO: Move this to where it's actually needed to be
+
+        delimiter = "\n"
+        buffer = "Hello\nSomethi\nng\n"
+
+        if delimiter in buffer:
+            print("Message found in the buffer")
+            buffer = buffer[buffer.index(delimiter) + 1:]
+            return total_data, buffer
+
+        delim_not_found = True
+        while delim_not_found:
+            data = self.tcp_sock.recv(constants.MAX_BYTES).decode('utf-8')
+            if delimiter in data:
+                total_data += data[:len(data) - len(delimiter)]
+                break
+            total_data += data
+            # Keep receiving data
+
+        print(total_data)
+
+    def list_files(self) -> list:
+        self.tcp_sock.sendall("LIST\n".encode('utf-8'))
+        self.recv_until_delimiter("\n")
+
+        return []
+
+
+    def bufferThing(self):
 
 
 
