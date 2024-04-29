@@ -19,8 +19,11 @@ def print_message(message: dict):
 
 def listening_loop():
     while True:
-        message = receive_message(server_socket)
-        print_message(message)
+        try:
+            message = receive_message(server_socket)
+            print_message(message)
+        except ConnectionAbortedError:
+            break
 
 def sending_loop():
     while True:
@@ -45,6 +48,11 @@ def sending_loop():
             }
 
         send_message(message_dict)
+
+        if raw_message == "EXIT":
+            print("Closing connection...")
+            server_socket.close()
+            break
 
 def send_message(message: dict):
     message_length = len(json.dumps(message)).to_bytes(4, 'big')
