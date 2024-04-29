@@ -5,6 +5,7 @@ from time import sleep, strftime
 from constants import *
 from utils import *
 
+
 class ClientData:
     user_id = ""
 
@@ -36,7 +37,7 @@ def sending_loop():
                 'recipient': raw_message.split()[1],
                 'content': " ".join(raw_message.split()[2:])
             }
-        elif raw_message == "EXIT":
+        elif raw_message == "/EXIT":
             message_dict = {
                 'type': "EXIT",
             }
@@ -49,7 +50,7 @@ def sending_loop():
 
         send_message(message_dict)
 
-        if raw_message == "EXIT":
+        if raw_message == "/EXIT":
             print("Closing connection...")
             server_socket.close()
             break
