@@ -6,6 +6,7 @@ import threading
 from constants import *
 from utils import *
 
+
 class Server:
     def __init__(self, address: tuple):
         self.address = address
@@ -20,13 +21,14 @@ class Server:
         print("Sending a message to " + message_dict['recipient'])
         [client.send_message_to(message_dict) for client in self.clients if client.user_id == message_dict['recipient']]
 
-    def disconnect_user(self, user_id:str):
+    def disconnect_user(self, user_id: str):
         print(self.clients)
         self.clients = [client for client in self.clients if client.user_id != user_id]
         print(self.clients)
 
 
 server = Server(SERVER_ADDRESS)
+
 
 class Client:
     def __init__(self, socket, ip_addr, name):

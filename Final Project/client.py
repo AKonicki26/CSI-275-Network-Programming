@@ -10,13 +10,15 @@ class ClientData:
     user_id = ""
 
 
-server_socket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 
 def print_message(message: dict):
     if message["type"] == "PRIVATE":
         print(f"[{strftime('%I:%M:%S %p')}] {message['sender']} whispers to you: {message['content']}")
     else:
         print(f"[{strftime('%I:%M:%S %p')}] {message['sender']}: {message['content']}")
+
 
 def listening_loop():
     while True:
@@ -25,6 +27,7 @@ def listening_loop():
             print_message(message)
         except ConnectionAbortedError:
             break
+
 
 def sending_loop():
     while True:
@@ -55,6 +58,7 @@ def sending_loop():
             server_socket.close()
             break
 
+
 def send_message(message: dict):
     message_length = len(json.dumps(message)).to_bytes(4, 'big')
     message_to_send = message_length + json.dumps(message).encode(ENCODING)
@@ -62,7 +66,6 @@ def send_message(message: dict):
 
 
 def connect_with_server():
-
     while ClientData.user_id == "":
         name = input("Hello! Please enter your user name: ")
         if name.isalnum():
